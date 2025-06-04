@@ -1,0 +1,17 @@
+FROM critoma/amd64_u24_noble_ism_security
+
+RUN apt-get update && apt-get install -y maven
+
+ENV PATH=/opt/software/node-v22.10.0-linux-x64/bin:$PATH
+
+
+COPY c01/frontend /frontend/
+COPY c01/backend /backend/
+COPY c01/start.sh /init/start.sh
+
+
+RUN chmod +x /init/start.sh
+
+WORKDIR /init
+
+CMD ["/init/start.sh"]

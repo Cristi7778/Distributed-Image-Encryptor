@@ -1,0 +1,10 @@
+CREATE DATABASE IF NOT EXISTS picturesdb;
+
+USE picturesdb;
+
+CREATE TABLE IF NOT EXISTS pictures (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    type ENUM('enc', 'dec') NOT NULL,
+    data LONGBLOB NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

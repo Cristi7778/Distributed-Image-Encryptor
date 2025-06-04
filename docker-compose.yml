@@ -1,0 +1,75 @@
+
+services:
+  c01_frontend:
+    build:
+      context: .
+      dockerfile: ./c01/Dockerfile.c01
+    container_name: c01
+    ports:
+      - "3000:3000"
+      - "8080:8080"
+    depends_on:
+      - c05_db
+
+  c02_broker:
+    image: rabbitmq:3.12-management
+    container_name: c02
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: cristi123
+    networks:
+      - default
+
+  c03_consumer_worker_mpi:
+    build:
+      context: .
+      dockerfile: ./c03/Dockerfile.c03
+    container_name: c03
+    depends_on:
+      - c02_broker
+
+  c04_worker_mpi:
+    build:
+      context: .
+      dockerfile: ./c04/Dockerfile.c04
+    container_name: c04
+    depends_on:
+      - c02_broker
+      - c03_consumer_worker_mpi
+
+  c05_db:
+    build:
+      context: .
+      dockerfile: ./c05/Dockerfile.c05
+    container_name: c05
+    ports:
+      - "4000:4000"
+    environment:
+      DB_HOST: mysql
+      DB_USER: picuser
+      DB_PASS: picpass
+      DB_NAME: picturesdb
+    depends_on:
+      - mysql
+    
+  mysql:
+    image: mysql:8
+    container_name: db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: picturesdb
+      MYSQL_USER: picuser
+      MYSQL_PASSWORD: picpass
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+
+
+volumes:
+  mysql_data:

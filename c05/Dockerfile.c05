@@ -1,0 +1,10 @@
+FROM critoma/amd64_u24_noble_ism_security
+
+ENV PATH=/opt/software/node-v22.10.0-linux-x64/bin:$PATH
+
+COPY ./c05/db /db
+
+WORKDIR /db
+
+
+CMD ["node", "server.js"]

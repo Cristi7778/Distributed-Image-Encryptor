@@ -1,0 +1,5 @@
+FROM critoma/amd64_u24_noble_ism_security
+
+COPY ./c03/consumer /consumer
+
+CMD ["tail", "-f", "/dev/null"]
